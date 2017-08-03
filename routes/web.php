@@ -14,3 +14,8 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::group(['middleware' => 'cors'], function(){
+    Route::post('acceso', 'userController@login');
+});
+
