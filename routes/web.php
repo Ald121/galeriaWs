@@ -12,10 +12,12 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('email_registro');
 });
 
 Route::group(['middleware' => 'cors'], function(){
     Route::post('acceso', 'userController@login');
+    Route::post('registrar', 'userController@registrar');
+    Route::post('activar', 'userController@activar');
 });
 
