@@ -19,5 +19,7 @@ Route::group(['middleware' => 'cors'], function(){
     Route::post('acceso', 'userController@login');
     Route::post('registrar', 'userController@registrar');
     Route::post('activar', 'userController@activar');
+    Route::post('uploadFiles', 'imagesController@uploadFiles');
+    Route::post('imagesList', 'imagesController@imagesList');
 });
 
