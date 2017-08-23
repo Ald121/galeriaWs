@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Image;
 use DB;
+use File;
 
 class imagesController extends Controller
 {
@@ -35,5 +36,15 @@ class imagesController extends Controller
     
     return response()->json(["respuesta" => true]);
                    	
+    }
+    
+    public function deleteImg(Request $request) {
+        DB::table('pictures')->where('idpictures',$request->id)->update(['status' => 'I' ]);
+        $update = File::Delete(public_path().'/'.$request->img);
+        if ($update) {
+            return response()->json(["respuesta" => true]);
+        }else{
+            return response()->json(["respuesta" => public_path().'/'.$request->img]);
+        }            
     }
 }
