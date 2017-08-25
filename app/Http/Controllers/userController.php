@@ -53,9 +53,10 @@ class userController extends Controller
         $checkpass = Hash::check($request->pass,$datos->pass);
         if ($checkpass) {
          $datos = $this->usuarios->select('id','nick')->where('nick',$request->nick)->where('status','A')->first();
-         $token = JWTAuth::fromUser($datos);
-
-         return response()->json(['respuesta' => true,'token' => $token]);
+         $datosUser = $this->usuarios->select('id','nombres','apellidos','email')->where('nick',$request->nick)->where('status','A')->first();
+         $extra = ['id'=>$datosUser->id];
+         $token = JWTAuth::fromUser($datos,$extra);
+         return response()->json(['respuesta' => true,'token' => $token,'datos' => $datosUser]);
         }
         return response()->json(["respuesta" => $checkpass]);           
     }
@@ -115,5 +116,14 @@ class userController extends Controller
             return response()->json(["respuesta" => true]);
         }
                    
+    }
+
+    public function salir(Request $request) {
+        $tokeninvalidate = JWTAuth::invalidate($request->token);
+        return response()->json(["respuesta" => $tokeninvalidate]);          
+    }
+
+    public function checkSession(Request $request) {
+        return response()->json(["respuesta" => true]);          
     }
 }

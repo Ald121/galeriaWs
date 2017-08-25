@@ -16,11 +16,16 @@ Route::get('/', function () {
 });
 
 Route::group(['middleware' => 'cors'], function(){
-    Route::post('acceso', 'userController@login');
-    Route::post('registrar', 'userController@registrar');
-    Route::post('activar', 'userController@activar');
-    Route::post('uploadFiles', 'imagesController@uploadFiles');
+	Route::post('acceso', 'userController@login');
     Route::post('imagesList', 'imagesController@imagesList');
-    Route::post('deleteImg', 'imagesController@deleteImg');
+	Route::group(['middleware' => ['auth.galeria']], function ()
+    {
+	    Route::post('registrar', 'userController@registrar');
+	    Route::post('activar', 'userController@activar');
+	    Route::post('uploadFiles', 'imagesController@uploadFiles');
+	    Route::post('deleteImg', 'imagesController@deleteImg');
+	    Route::post('salir', 'userController@salir');
+	    Route::post('checkSession', 'userController@checkSession');
+    });
 });
 
