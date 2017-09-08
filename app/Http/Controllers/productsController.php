@@ -7,18 +7,21 @@ use Image;
 use DB;
 use File;
 
-class imagesController extends Controller
+class productsController extends Controller
 {
+    public function productsList(Request $request) {
     
-	public function imagesList(Request $request) {
+    $products = DB::table('products')->where('status','A')->get();
+
+    foreach ($products as $key => $prod) {
+    	$prod->images = DB::table('image_products')->where('status','A')->where('idproducts',$prod->idproducts)->get();
+    }
     
-    $images = DB::table('pictures')->where('status','A')->get();
-    
-    return response()->json(["respuesta" => true, 'list' => $images]);
+    return response()->json(["respuesta" => true, 'list' => $products]);
                    	
     }
 
-    public function uploadFiles(Request $request) {
+    public function addProduct(Request $request) {
     
     if($request->hasFile('file'))
         {
@@ -27,7 +30,7 @@ class imagesController extends Controller
 
         $path = public_path('galeria/' . $filename);
         Image::make($image->getRealPath())->save($path);
-        $save = DB::table('pictures')->insert(
+        $save = DB::table('products')->insert(
         [
          'src'=>'galeria/' . $filename, 
          'status'=>'A'
@@ -38,12 +41,12 @@ class imagesController extends Controller
                    	
     }
     
-    public function deleteImg(Request $request) {
+    public function deleteProd(Request $request) {
         $exists = File::exists(public_path().'/'.$request->img);
         if ($exists) {
            File::Delete(public_path().'/'.$request->img);
         }
-        $delete = DB::table('pictures')->where('idpictures',$request->id)->update(['status' => 'I' ]);
+        $delete = DB::table('products')->where('idproducts',$request->id)->update(['status' => 'I' ]);
         if ($delete == 0) {
             return response()->json(["respuesta" => true]);
         }else{
