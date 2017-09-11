@@ -11,10 +11,10 @@ class productsController extends Controller
 {
     public function productsList(Request $request) {
     
-    $products = DB::table('products')->where('status','A')->get();
+    $products = DB::table('productos')->where('status','A')->get();
 
     foreach ($products as $key => $prod) {
-    	$prod->images = DB::table('image_products')->where('status','A')->where('idproducts',$prod->idproducts)->get();
+    	$prod->images = DB::table('productos_imagenes')->where('status','A')->where('idproductos',$prod->idproductos)->get();
     }
     
     return response()->json(["respuesta" => true, 'list' => $products]);
@@ -22,23 +22,33 @@ class productsController extends Controller
     }
 
     public function addProduct(Request $request) {
-    
-    if($request->hasFile('file'))
-        {
-        $image = $request->file('file');
-        $filename  = time() . '.' . $image->getClientOriginalExtension();
+        $prod = [
+          'nombre' => $request->nombre,
+          'description' => $request->description,
+          'precio' => $request->precio,
+          'status' => 'A'
+          ];
+        $id = DB::table('productos')->insertGetId($prod);
+        $prod['id'] = $id;
+        return response()->json(["respuesta" => true,"row" => $prod]);         	
+    }
 
-        $path = public_path('galeria/' . $filename);
-        Image::make($image->getRealPath())->save($path);
-        $save = DB::table('products')->insert(
-        [
-         'src'=>'galeria/' . $filename, 
-         'status'=>'A'
-        ]);
-       }
-    
-    return response()->json(["respuesta" => true]);
-                   	
+    public function addImgProduct(Request $request) {
+        if($request->hasFile('file'))
+            {
+                $image = $request->file('file');
+                $filename  = time() . '.' . $image->getClientOriginalExtension();
+                $path = public_path('products/' . $filename);
+                Image::make($image->getRealPath())->save($path);
+                $save = DB::table('productos_imagenes')->insert(
+                [
+                 'url' => $filename,
+                 'idproductos' => $request->idProd,
+                 'default' => $request->default,
+                 'status'=>'A'
+                ]);
+           }
+        return response()->json(["respuesta" => true]);          
     }
     
     public function deleteProd(Request $request) {
@@ -46,8 +56,8 @@ class productsController extends Controller
         if ($exists) {
            File::Delete(public_path().'/'.$request->img);
         }
-        $delete = DB::table('products')->where('idproducts',$request->id)->update(['status' => 'I' ]);
-        if ($delete == 0) {
+        $delete = DB::table('productos')->where('idproductos',$request->id)->update(['status' => 'I' ]);
+        if ($delete == 1) {
             return response()->json(["respuesta" => true]);
         }else{
             return response()->json(["respuesta" => false]);

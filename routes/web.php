@@ -27,6 +27,9 @@ Route::group(['middleware' => 'cors'], function(){
 	    Route::post('deleteImg', 'imagesController@deleteImg');
 	    Route::post('salir', 'userController@salir');
 	    Route::post('checkSession', 'userController@checkSession');
+	    // Productos
+	    Route::post('addProduct', 'productsController@addProduct');
+	    Route::post('addImgProduct', 'productsController@addImgProduct');
     });
 });
 
