@@ -30,6 +30,7 @@ Route::group(['middleware' => 'cors'], function(){
 	    // Productos
 	    Route::post('addProduct', 'productsController@addProduct');
 	    Route::post('addImgProduct', 'productsController@addImgProduct');
+	    Route::post('deleteProd', 'productsController@deleteProd');
     });
 });
 

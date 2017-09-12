@@ -52,11 +52,15 @@ class productsController extends Controller
     }
     
     public function deleteProd(Request $request) {
-        $exists = File::exists(public_path().'/'.$request->img);
-        if ($exists) {
-           File::Delete(public_path().'/'.$request->img);
+       
+       foreach ($request->item['images'] as $value) {
+        $exists = File::exists(public_path().'/products/' . $value['url']);
+          if ($exists) {
+             File::Delete(public_path().'/products/' . $value['url']);
         }
-        $delete = DB::table('productos')->where('idproductos',$request->id)->update(['status' => 'I' ]);
+        DB::table('productos_imagenes')->where('idproductos_imagenes',$value['idproductos_imagenes'])->update(['status' => 'I' ]);
+       }
+        $delete = DB::table('productos')->where('idproductos',$request->item['idproductos'])->update(['status' => 'I' ]);
         if ($delete == 1) {
             return response()->json(["respuesta" => true]);
         }else{
