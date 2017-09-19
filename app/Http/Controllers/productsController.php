@@ -67,4 +67,11 @@ class productsController extends Controller
             return response()->json(["respuesta" => false]);
         }            
     }
+
+    public function prodDetails(Request $request) {
+    
+    $product = DB::table('productos')->where('status','A')->where('idproductos',$request->id)->first();
+    $product->images = DB::table('productos_imagenes')->where('status','A')->where('idproductos',$request->id)->get();
+    return response()->json(["respuesta" => true,"prod" => $product]);
+  }
 }

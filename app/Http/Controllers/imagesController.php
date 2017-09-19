@@ -18,6 +18,14 @@ class imagesController extends Controller
                    	
     }
 
+    public function imagesListByCat(Request $request) {
+    
+    $images = DB::table('pictures')->where('status','A')->where('category',$request->cat)->get();
+    
+    return response()->json(["respuesta" => true, 'list' => $images]);
+                    
+    }
+
     public function uploadFiles(Request $request) {
     
     if($request->hasFile('file'))
@@ -29,7 +37,8 @@ class imagesController extends Controller
         Image::make($image->getRealPath())->save($path);
         $save = DB::table('pictures')->insert(
         [
-         'src'=>'galeria/' . $filename, 
+         'src'=>'galeria/' . $filename,
+         'category'=>$request->cat, 
          'status'=>'A'
         ]);
        }

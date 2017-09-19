@@ -18,7 +18,9 @@ Route::get('/', function () {
 Route::group(['middleware' => 'cors'], function(){
 	Route::post('acceso', 'userController@login');
     Route::post('imagesList', 'imagesController@imagesList');
+    Route::post('imagesListByCat', 'imagesController@imagesListByCat');
     Route::post('productsList', 'productsController@productsList');
+    Route::post('prodDetails', 'productsController@prodDetails');
 	Route::group(['middleware' => ['auth.galeria']], function ()
     {
 	    Route::post('registrar', 'userController@registrar');
@@ -32,5 +34,6 @@ Route::group(['middleware' => 'cors'], function(){
 	    Route::post('addImgProduct', 'productsController@addImgProduct');
 	    Route::post('deleteProd', 'productsController@deleteProd');
     });
+
 });
 
