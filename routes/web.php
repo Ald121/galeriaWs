@@ -20,6 +20,8 @@ Route::group(['middleware' => 'cors'], function(){
     Route::post('imagesList', 'imagesController@imagesList');
     Route::post('imagesListByCat', 'imagesController@imagesListByCat');
     Route::post('productsList', 'productsController@productsList');
+    Route::post('sliderProdDestacados', 'productsController@sliderProdDestacados');
+    Route::post('sliderList', 'productsController@sliderList');
     Route::post('prodDetails', 'productsController@prodDetails');
 	Route::group(['middleware' => ['auth.galeria']], function ()
     {

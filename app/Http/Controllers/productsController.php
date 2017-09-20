@@ -9,9 +9,26 @@ use File;
 
 class productsController extends Controller
 {
+    
+    public function sliderList(Request $request) {
+      $products = DB::table('productos')->where('status','A')->where('inSlider',1)->get();
+      foreach ($products as $key => $prod) {
+        $prod->images = DB::table('productos_imagenes')->where('status','A')->where('idproductos',$prod->idproductos)->get();
+      }
+      return response()->json(["respuesta" => true, 'list' => $products]);            
+    }
+
+    public function sliderProdDestacados(Request $request) {
+      $products = DB::table('productos')->where('status','A')->where('destacar',1)->get();
+      foreach ($products as $key => $prod) {
+        $prod->images = DB::table('productos_imagenes')->where('status','A')->where('idproductos',$prod->idproductos)->get();
+      }
+      return response()->json(["respuesta" => true, 'list' => $products]);            
+    }
+
     public function productsList(Request $request) {
     
-    $products = DB::table('productos')->where('status','A')->get();
+    $products = DB::table('productos')->where('status','A')->orderBy('idproductos','DESC')->get();
 
     foreach ($products as $key => $prod) {
     	$prod->images = DB::table('productos_imagenes')->where('status','A')->where('idproductos',$prod->idproductos)->get();
@@ -26,7 +43,9 @@ class productsController extends Controller
           'nombre' => $request->nombre,
           'description' => $request->description,
           'precio' => $request->precio,
-          'status' => 'A'
+          'status' => 'A',
+          'inSlider' => $request->inSlider,
+          'destacar' => $request->destacar
           ];
         $id = DB::table('productos')->insertGetId($prod);
         $prod['id'] = $id;
