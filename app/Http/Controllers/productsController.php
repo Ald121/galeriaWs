@@ -15,6 +15,15 @@ class productsController extends Controller
       foreach ($products as $key => $prod) {
         $prod->images = DB::table('productos_imagenes')->where('status','A')->where('idproductos',$prod->idproductos)->get();
       }
+      foreach ($products as $key => $prod) {
+        $prod_colores = DB::table('productos_colores')->where('status','A')->where('idproductos',$prod->idproductos)->get();
+        $colores = [];
+        foreach ($prod_colores as $key => $prod_color) {
+          $colores[$key] = DB::table('colores')->where('status','A')->where('idcolores',$prod_color->idcolores)->first();
+        }
+        $prod->colores = $colores;
+      }
+      
       return response()->json(["respuesta" => true, 'list' => $products]);            
     }
 
@@ -33,6 +42,14 @@ class productsController extends Controller
     foreach ($products as $key => $prod) {
     	$prod->images = DB::table('productos_imagenes')->where('status','A')->where('idproductos',$prod->idproductos)->get();
     }
+    foreach ($products as $key => $prod) {
+        $prod_colores = DB::table('productos_colores')->where('status','A')->where('idproductos',$prod->idproductos)->get();
+        $colores = [];
+        foreach ($prod_colores as $key => $prod_color) {
+          $colores[$key] = DB::table('colores')->where('status','A')->where('idcolores',$prod_color->idcolores)->first();
+        }
+        $prod->colores = $colores;
+      }
     
     return response()->json(["respuesta" => true, 'list' => $products]);
                    	
@@ -45,10 +62,19 @@ class productsController extends Controller
           'precio' => $request->precio,
           'status' => 'A',
           'inSlider' => $request->inSlider,
-          'destacar' => $request->destacar
+          'destacar' => $request->destacar,
+          'stock' => $request->stock
           ];
         $id = DB::table('productos')->insertGetId($prod);
         $prod['id'] = $id;
+        foreach ($request->colores as $value) {
+          $id = DB::table('productos_colores')->insert(
+            [
+              'idproductos' => $prod['id'],
+              'idcolores' => $value,
+              'status' => 'A'
+            ]);
+        }
         return response()->json(["respuesta" => true,"row" => $prod]);         	
     }
 
