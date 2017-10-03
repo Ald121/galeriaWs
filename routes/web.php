@@ -39,6 +39,12 @@ Route::group(['middleware' => 'cors'], function(){
 	    Route::post('colorList', 'colorCOntroller@colorList');
 	    Route::post('addColor', 'colorCOntroller@addColor');
 	    Route::post('deleteColor', 'colorCOntroller@deleteColor');
+	    // Pedidos
+	    Route::post('pedidosList', 'pedidosController@pedidosList');
+	    Route::post('addPedido' ,'pedidosController@addPedido');
+	    Route::post('deletePedido' ,'pedidosController@deletePedido');
+	    Route::post('pedidoDetails' ,'pedidosController@pedidoDetails');
+
 
     });
 
