@@ -40,7 +40,7 @@ class userController extends Controller
 
   	public function login(Request $request) {
 
-        $datos=$this->usuarios->select('nick','id')->where('nick',$request->nick)->get();
+        $datos = $this->usuarios->select('nick','id')->where('nick',$request->nick)->get();
         if (count($datos) == 0) {
             return response()->json(["respuesta" => false]);
         }
@@ -72,7 +72,10 @@ class userController extends Controller
          'nombres' => $request->nombres,
          'apellidos' => $request->apellidos,
          'email' => $request->email,
-         'activationCode' => $activationCode
+         'activationCode' => $activationCode,
+         'direccion' => $request->direccion,
+         'ciudad' => $request->ciudad,
+         'telefono' => $request->telefono
         ]);
         if ($save) {
         $data = [ 

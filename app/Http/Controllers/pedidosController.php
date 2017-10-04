@@ -20,20 +20,32 @@ class pedidosController extends Controller
       $limit = $request->limit;
       $pedidos = DB::table('pedidos')
                   ->where('status','A')
-                  ->orderBy('createat','DESC')->paginate(10);
-      // foreach ($pedidos as $key => $prod) {
-      // 	$prod->images = DB::table('pedidos_prods')->where('status','A')->where('idproductos',$prod->idproductos)->get();
-      // }
-      // foreach ($pedidos as $key => $prod) {
-      //     $prod_colores = DB::table('productos_colores')->where('status','A')->where('idproductos',$prod->idproductos)->get();
-      //     $colores = [];
-      //     foreach ($prod_colores as $key => $prod_color) {
-      //       $colores[$key] = DB::table('colores')->where('status','A')->where('idcolores',$prod_color->idcolores)->first();
-      //     }
-      //     $prod->colores = $colores;
-      //   }
-      // $data = $this->funciones->paginarDatos($pedidos,$currentPage,$limit);
-      // $data = $this->funciones->paginarDatos($pedidos,$currentPage,$limit);
+                  ->orderBy('createat','DESC')->paginate(5);
+
+      foreach ($pedidos as $key => $pedido) {
+        $usuario = DB::table('usuarios')->select('nombres','apellidos')
+                  ->where('status','A')
+                  ->where('id',$pedido->idusuarios)->first();
+        $pedido->usuario = $usuario;          
+       $detalles = DB::table('pedidos_prods')->select('idproductos','cantidad','total_prod')
+                  ->where('status','A')
+                  ->where('idpedido',$pedido->idpedidos)->get();
+
+        foreach ($detalles as $key => $prod) {
+          $prodq = DB::table('productos')
+                  ->where('status','A')
+                  ->where('idproductos',$prod->idproductos)->first();
+          $imageProd = DB::table('productos_imagenes')->select('url')
+                  ->where('default',1)
+                  ->where('idproductos',$prod->idproductos)->first();
+          $prodq->cantidad = $prod->cantidad;
+          $prodq->total_prod = $prod->total_prod;
+          $prodq->image = $imageProd->url;
+          $detalles[$key] = $prodq;
+          unset($detalles[$key]->idproductos);
+        }
+        $pedido->detalles =  $detalles;
+      }
       return response()->json(["respuesta" => true, 'list' => $pedidos]);           	
     }
 
@@ -42,7 +54,7 @@ class pedidosController extends Controller
         $prod = [
           'codigo'=>$this->funciones->generarPass(8,false,'ud'),
           'total'=>$request->total,
-          'estado'=>'P',
+          'estado'=>'Pendiente',
           'status'=>'A',
           'idusuarios'=>$request->user
          ];

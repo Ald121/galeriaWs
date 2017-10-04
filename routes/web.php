@@ -23,10 +23,13 @@ Route::group(['middleware' => 'cors'], function(){
     Route::post('sliderProdDestacados', 'productsController@sliderProdDestacados');
     Route::post('sliderList', 'productsController@sliderList');
     Route::post('prodDetails', 'productsController@prodDetails');
+    // Ciudades
+    Route::post('getCiudades', 'locationController@getCiudades');
+    Route::post('getProvincias', 'locationController@getProvincias');
+    Route::post('registrar', 'userController@registrar');
+    Route::post('activar', 'userController@activar');
 	Route::group(['middleware' => ['auth.galeria']], function ()
     {
-	    Route::post('registrar', 'userController@registrar');
-	    Route::post('activar', 'userController@activar');
 	    Route::post('uploadFiles', 'imagesController@uploadFiles');
 	    Route::post('deleteImg', 'imagesController@deleteImg');
 	    Route::post('salir', 'userController@salir');
