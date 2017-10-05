@@ -16,12 +16,20 @@ class productsController extends Controller
         $prod->images = DB::table('productos_imagenes')->where('status','A')->where('idproductos',$prod->idproductos)->get();
       }
       foreach ($products as $key => $prod) {
+        // Colores
         $prod_colores = DB::table('productos_colores')->where('status','A')->where('idproductos',$prod->idproductos)->get();
         $colores = [];
         foreach ($prod_colores as $key => $prod_color) {
           $colores[$key] = DB::table('colores')->where('status','A')->where('idcolores',$prod_color->idcolores)->first();
         }
         $prod->colores = $colores;
+        // Tallas
+        $prod_tallas = DB::table('tallas_prods')->where('status','A')->where('idproductos',$prod->idproductos)->get();
+        $tallas = [];
+        foreach ($prod_tallas as $key => $prod_color) {
+          $tallas[$key] = DB::table('tallas')->where('status','A')->where('idtallas',$prod_color->idtallas)->first();
+        }
+        $prod->tallas = $tallas;
       }
       
       return response()->json(["respuesta" => true, 'list' => $products]);            
@@ -43,12 +51,20 @@ class productsController extends Controller
     	$prod->images = DB::table('productos_imagenes')->where('status','A')->where('idproductos',$prod->idproductos)->get();
     }
     foreach ($products as $key => $prod) {
+        // Colores
         $prod_colores = DB::table('productos_colores')->where('status','A')->where('idproductos',$prod->idproductos)->get();
         $colores = [];
         foreach ($prod_colores as $key => $prod_color) {
           $colores[$key] = DB::table('colores')->where('status','A')->where('idcolores',$prod_color->idcolores)->first();
         }
         $prod->colores = $colores;
+        // Tallas
+        $prod_tallas = DB::table('tallas_prods')->where('status','A')->where('idproductos',$prod->idproductos)->get();
+        $tallas = [];
+        foreach ($prod_tallas as $key => $prod_color) {
+          $tallas[$key] = DB::table('tallas')->where('status','A')->where('idtallas',$prod_color->idtallas)->first();
+        }
+        $prod->tallas = $tallas;
       }
     
     return response()->json(["respuesta" => true, 'list' => $products]);
@@ -72,6 +88,15 @@ class productsController extends Controller
             [
               'idproductos' => $prod['id'],
               'idcolores' => $value,
+              'status' => 'A'
+            ]);
+        }
+
+        foreach ($request->tallas as $value) {
+          $id = DB::table('tallas_prods')->insert(
+            [
+              'idproductos' => $prod['id'],
+              'idtallas' => $value,
               'status' => 'A'
             ]);
         }

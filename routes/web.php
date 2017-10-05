@@ -47,7 +47,9 @@ Route::group(['middleware' => 'cors'], function(){
 	    Route::post('addPedido' ,'pedidosController@addPedido');
 	    Route::post('deletePedido' ,'pedidosController@deletePedido');
 	    Route::post('pedidoDetails' ,'pedidosController@pedidoDetails');
-
+	    // Tallas
+	    Route::post('addTalla', 'tallasController@addTalla');
+	    Route::post('tallasList', 'tallasController@tallasList');
 
     });
 

@@ -66,14 +66,17 @@ class pedidosController extends Controller
               'idproductos'=> $value['idproductos'],
               'cantidad'=> $value['cantidadInCar'],
               'total_prod'=> $value['totalCu'],
+              'talla'=> $value['talla'],
+              'color'=> $value['color'],
               'status'=>'A'
            ]);
-          $prodUpdate = DB::table('productos')->select('stock')->where('idproductos',$value['idproductos'])->first();
-          $resta = $prodUpdate->stock - $value['cantidadInCar'];
-          DB::table('productos')->where('idproductos',$value['idproductos'])->update(
-            [
-              'stock' => $resta
-           ]);
+          // update stock
+          // $prodUpdate = DB::table('productos')->select('stock')->where('idproductos',$value['idproductos'])->first();
+          // $resta = $prodUpdate->stock - $value['cantidadInCar'];
+          // DB::table('productos')->where('idproductos',$value['idproductos'])->update(
+          //   [
+          //     'stock' => $resta
+          //  ]);
         }
         return response()->json(["respuesta" => true]);     	
     }
