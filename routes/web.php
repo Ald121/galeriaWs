@@ -50,6 +50,11 @@ Route::group(['middleware' => 'cors'], function(){
 	    // Tallas
 	    Route::post('addTalla', 'tallasController@addTalla');
 	    Route::post('tallasList', 'tallasController@tallasList');
+	    // Bancos
+	    Route::post('addBanco', 'bancosController@addBanco');
+	    Route::post('updateBanco', 'bancosController@updateBanco');
+	    Route::post('bancosList', 'bancosController@bancosList');
+	    Route::post('deleteBanco', 'bancosController@deleteBanco');
 
     });
 
