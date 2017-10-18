@@ -45,7 +45,7 @@ class userController extends Controller
             return response()->json(["respuesta" => false]);
         }
 
-        $datos=DB::table('usuarios')->select('pass')->where('nick',$request->nick)->where('status','A')->first();
+        $datos = DB::table('usuarios')->select('pass')->where('nick',$request->nick)->where('status','A')->first();
         if (count($datos) == 0) {
             return response()->json(["respuesta" => false]);
         }
@@ -53,7 +53,9 @@ class userController extends Controller
         $checkpass = Hash::check($request->pass,$datos->pass);
         if ($checkpass) {
          $datos = $this->usuarios->select('id','nick')->where('nick',$request->nick)->where('status','A')->first();
-         $datosUser = $this->usuarios->select('id','nombres','apellidos','email')->where('nick',$request->nick)->where('status','A')->first();
+         $datosUser = $this->usuarios->select('id','nombres','apellidos','email','direccion','ciudad','telefono')->where('nick',$request->nick)->where('status','A')->first();
+         $prov = DB::table('ciudades')->select('provincia')->where('nombre',$datosUser->ciudad)->where('status','A')->first();
+         $datosUser->provincia = $prov->provincia;
          $extra = ['id'=>$datosUser->id];
          $token = JWTAuth::fromUser($datos,$extra);
          return response()->json(['respuesta' => true,'token' => $token,'datos' => $datosUser]);

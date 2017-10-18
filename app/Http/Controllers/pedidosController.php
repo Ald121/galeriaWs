@@ -117,9 +117,25 @@ class pedidosController extends Controller
     }
 
     public function prodDetails(Request $request) {
-    
-    $product = DB::table('pedidos')->where('status','A')->where('idproductos',$request->id)->first();
-    $product->images = DB::table('pedidos_prods')->where('status','A')->where('idproductos',$request->id)->get();
-    return response()->json(["respuesta" => true,"prod" => $product]);
-  }
+      $product = DB::table('pedidos')->where('status','A')->where('idproductos',$request->id)->first();
+      $product->images = DB::table('pedidos_prods')->where('status','A')->where('idproductos',$request->id)->get();
+      return response()->json(["respuesta" => true,"prod" => $product]);
+    }
+
+    public function procesPedido(Request $request) {
+      $updatePedido = DB::table('pedidos')->where('idpedidos',$request->id)->update([
+        'estado' => 'Enviado'
+      ]);
+      // Reducir Stock
+      $producstPedidos = DB::table('pedidos_prods')->where('idpedido',$request->id)->get();
+      foreach ($producstPedidos as $key => $value) {
+        $cantidad = $value->cantidad;
+        $prod = DB::table('productos')->select('stock')->where('idproductos',$value->idproductos)->first();
+        $res = intval($prod->stock) - intval($cantidad);
+        DB::table('productos')->where('idproductos',$value->idproductos)->update([
+          'stock' => $res
+        ]);
+      }
+      return response()->json(["respuesta" => true]);
+    }
 }
