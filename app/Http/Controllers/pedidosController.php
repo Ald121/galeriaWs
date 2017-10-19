@@ -56,7 +56,8 @@ class pedidosController extends Controller
           'total'=>$request->total,
           'estado'=>'Pendiente',
           'status'=>'A',
-          'idusuarios'=>$request->user
+          'idusuarios'=>$request->user,
+          'comprobante'=> ''
          ];
         $id = DB::table('pedidos')->insertGetId($prod);
         foreach ($items as $value) {
@@ -98,6 +99,41 @@ class pedidosController extends Controller
            }
         return response()->json(["respuesta" => true]);          
     }
+
+    public function pedidosListCliente(Request $request) {
+      $currentPage = $request->pagina_actual;
+      $limit = $request->limit;
+      $pedidos = DB::table('pedidos')
+                  ->where('status','A')
+                  ->where('idusuarios',$request->iduser)
+                  ->orderBy('createat','DESC')->paginate(5);
+
+      foreach ($pedidos as $key => $pedido) {
+        $usuario = DB::table('usuarios')->select('nombres','apellidos')
+                  ->where('status','A')
+                  ->where('id',$pedido->idusuarios)->first();
+        $pedido->usuario = $usuario;          
+       $detalles = DB::table('pedidos_prods')->select('idproductos','cantidad','total_prod')
+                  ->where('status','A')
+                  ->where('idpedido',$pedido->idpedidos)->get();
+
+        foreach ($detalles as $key => $prod) {
+          $prodq = DB::table('productos')
+                  ->where('status','A')
+                  ->where('idproductos',$prod->idproductos)->first();
+          $imageProd = DB::table('productos_imagenes')->select('url')
+                  ->where('default',1)
+                  ->where('idproductos',$prod->idproductos)->first();
+          $prodq->cantidad = $prod->cantidad;
+          $prodq->total_prod = $prod->total_prod;
+          $prodq->image = $imageProd->url;
+          $detalles[$key] = $prodq;
+          unset($detalles[$key]->idproductos);
+        }
+        $pedido->detalles =  $detalles;
+      }
+      return response()->json(["respuesta" => true, 'list' => $pedidos]);             
+    }
     
     public function deleteProd(Request $request) {
        
@@ -136,6 +172,21 @@ class pedidosController extends Controller
           'stock' => $res
         ]);
       }
+      return response()->json(["respuesta" => true]);
+    }
+
+    public function uploadComprobante(Request $request) {
+      if($request->hasFile('file'))
+            {
+                $image = $request->file('file');
+                $filename  = 'PEDIDO-'.$request->pedido . '.' . $image->getClientOriginalExtension();
+                $path = public_path('comprobantes/' . $filename);
+                Image::make($image->getRealPath())->save($path);
+                $save = DB::table('pedidos')->where('idpedidos',$request->pedido)->update(
+                [
+                 'comprobante' => $filename
+                ]);
+           }
       return response()->json(["respuesta" => true]);
     }
 }

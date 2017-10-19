@@ -39,15 +39,17 @@ Route::group(['middleware' => 'cors'], function(){
 	    Route::post('addImgProduct', 'productsController@addImgProduct');
 	    Route::post('deleteProd', 'productsController@deleteProd');
 	    // Colores
-	    Route::post('colorList', 'colorCOntroller@colorList');
-	    Route::post('addColor', 'colorCOntroller@addColor');
-	    Route::post('deleteColor', 'colorCOntroller@deleteColor');
+	    Route::post('colorList', 'colorController@colorList');
+	    Route::post('addColor', 'colorController@addColor');
+	    Route::post('deleteColor', 'colorController@deleteColor');
 	    // Pedidos
 	    Route::post('pedidosList', 'pedidosController@pedidosList');
 	    Route::post('addPedido' ,'pedidosController@addPedido');
 	    Route::post('deletePedido' ,'pedidosController@deletePedido');
 	    Route::post('pedidoDetails' ,'pedidosController@pedidoDetails');
 	    Route::post('procesPedido' ,'pedidosController@procesPedido');
+	    Route::post('pedidosListCliente' ,'pedidosController@pedidosListCliente');
+	    Route::post('uploadComprobante' ,'pedidosController@uploadComprobante');
 	    // Tallas
 	    Route::post('addTalla', 'tallasController@addTalla');
 	    Route::post('tallasList', 'tallasController@tallasList');
