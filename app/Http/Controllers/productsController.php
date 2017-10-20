@@ -40,7 +40,24 @@ class productsController extends Controller
       foreach ($products as $key => $prod) {
         $prod->images = DB::table('productos_imagenes')->where('status','A')->where('idproductos',$prod->idproductos)->get();
       }
-      return response()->json(["respuesta" => true, 'list' => $products]);            
+      foreach ($products as $key => $prod) {
+        // Colores
+        $prod_colores = DB::table('productos_colores')->where('status','A')->where('idproductos',$prod->idproductos)->get();
+        $colores = [];
+        foreach ($prod_colores as $key => $prod_color) {
+          $colores[$key] = DB::table('colores')->where('status','A')->where('idcolores',$prod_color->idcolores)->first();
+        }
+        $prod->colores = $colores;
+        // Tallas
+        $prod_tallas = DB::table('tallas_prods')->where('status','A')->where('idproductos',$prod->idproductos)->get();
+        $tallas = [];
+        foreach ($prod_tallas as $key => $prod_color) {
+          $tallas[$key] = DB::table('tallas')->where('status','A')->where('idtallas',$prod_color->idtallas)->first();
+        }
+        $prod->tallas = $tallas;
+      }
+      
+      return response()->json(["respuesta" => true, 'list' => $products]);              
     }
 
     public function productsList(Request $request) {
@@ -79,7 +96,8 @@ class productsController extends Controller
           'status' => 'A',
           'inSlider' => $request->inSlider,
           'destacar' => $request->destacar,
-          'stock' => $request->stock
+          'stock' => $request->stock,
+          'categoria' =>  $request->categoria
           ];
         $id = DB::table('productos')->insertGetId($prod);
         $prod['id'] = $id;
@@ -99,6 +117,48 @@ class productsController extends Controller
               'idtallas' => $value,
               'status' => 'A'
             ]);
+        }
+        return response()->json(["respuesta" => true,"row" => $prod]);          
+    }
+
+    public function updateProduct(Request $request) {
+        $prod = [
+          'nombre' => $request->nombre,
+          'description' => $request->description,
+          'precio' => $request->precio,
+          'inSlider' => $request->inSlider,
+          'destacar' => $request->destacar,
+          'stock' => $request->stock,
+          'categoria' =>  $request->categoria
+          ];
+        $id = DB::table('productos')->where('idproductos',$request->idproductos)->update($prod);
+        $prod['id'] = $id;
+        foreach ($request->colores as $value) {
+          $existColor = DB::table('productos_colores')
+          ->where('idcolores',$value)
+          ->where('idproductos',$request->idproductos)->get();
+          if (count($existColor) == 0) {
+            DB::table('productos_colores')->insert(
+            [
+              'idproductos' => $request->idproductos,
+              'idcolores' => $value,
+              'status' => 'A'
+            ]);
+          }
+        }
+
+        foreach ($request->tallas as $value) {
+          $existTalla = DB::table('tallas_prods')
+          ->where('idtallas',$value)
+          ->where('idproductos',$request->idproductos)->get();
+          if (count($existTalla) == 0) {
+            DB::table('tallas_prods')->insert(
+              [
+                'idproductos' => $request->idproductos,
+                'idtallas' => $value,
+                'status' => 'A'
+              ]);
+          }
         }
         return response()->json(["respuesta" => true,"row" => $prod]);         	
     }

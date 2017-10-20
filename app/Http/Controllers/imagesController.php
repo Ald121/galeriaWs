@@ -52,7 +52,7 @@ class imagesController extends Controller
         if ($exists) {
            File::Delete(public_path().'/'.$request->img);
         }
-        $delete = DB::table('pictures')->where('idpictures',$request->id)->update(['status' => 'I' ]);
+        $delete = DB::table('productos_imagenes')->where('idproductos_imagenes',$request->idImage)->update(['status' => 'I' ]);
         if ($delete == 1) {
             return response()->json(["respuesta" => true]);
         }else{
