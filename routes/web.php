@@ -28,6 +28,7 @@ Route::group(['middleware' => 'cors'], function(){
     Route::post('getProvincias', 'locationController@getProvincias');
     Route::post('registrar', 'userController@registrar');
     Route::post('activar', 'userController@activar');
+    Route::post('bancosList', 'bancosController@bancosList');
 	Route::group(['middleware' => ['auth.galeria']], function ()
     {
 	    Route::post('uploadFiles', 'imagesController@uploadFiles');
@@ -36,6 +37,7 @@ Route::group(['middleware' => 'cors'], function(){
 	    Route::post('checkSession', 'userController@checkSession');
 	    // Productos
 	    Route::post('addProduct', 'productsController@addProduct');
+	    Route::post('updateProd', 'productsController@updateProduct');
 	    Route::post('addImgProduct', 'productsController@addImgProduct');
 	    Route::post('deleteProd', 'productsController@deleteProd');
 	    // Colores
@@ -56,8 +58,12 @@ Route::group(['middleware' => 'cors'], function(){
 	    // Bancos
 	    Route::post('addBanco', 'bancosController@addBanco');
 	    Route::post('updateBanco', 'bancosController@updateBanco');
-	    Route::post('bancosList', 'bancosController@bancosList');
 	    Route::post('deleteBanco', 'bancosController@deleteBanco');
+	    // Categorias
+	    Route::post('categoriasList', 'categoriasController@categoriasList');
+		Route::post('addCategoria', 'categoriasController@addCategoria');
+		Route::post('updateCategoria', 'categoriasController@updateCategoria');
+		Route::post('deleteCategoria', 'categoriasController@deleteCategoria');
 
     });
 
