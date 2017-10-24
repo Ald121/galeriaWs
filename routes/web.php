@@ -23,6 +23,7 @@ Route::group(['middleware' => 'cors'], function(){
     Route::post('sliderProdDestacados', 'productsController@sliderProdDestacados');
     Route::post('sliderList', 'productsController@sliderList');
     Route::post('prodDetails', 'productsController@prodDetails');
+    Route::post('categoriasList', 'categoriasController@categoriasList');
     // Ciudades
     Route::post('getCiudades', 'locationController@getCiudades');
     Route::post('getProvincias', 'locationController@getProvincias');
@@ -52,6 +53,7 @@ Route::group(['middleware' => 'cors'], function(){
 	    Route::post('procesPedido' ,'pedidosController@procesPedido');
 	    Route::post('pedidosListCliente' ,'pedidosController@pedidosListCliente');
 	    Route::post('uploadComprobante' ,'pedidosController@uploadComprobante');
+	    Route::post('getClientData' ,'pedidosController@getClientData');
 	    // Tallas
 	    Route::post('addTalla', 'tallasController@addTalla');
 	    Route::post('tallasList', 'tallasController@tallasList');
@@ -60,7 +62,6 @@ Route::group(['middleware' => 'cors'], function(){
 	    Route::post('updateBanco', 'bancosController@updateBanco');
 	    Route::post('deleteBanco', 'bancosController@deleteBanco');
 	    // Categorias
-	    Route::post('categoriasList', 'categoriasController@categoriasList');
 		Route::post('addCategoria', 'categoriasController@addCategoria');
 		Route::post('updateCategoria', 'categoriasController@updateCategoria');
 		Route::post('deleteCategoria', 'categoriasController@deleteCategoria');

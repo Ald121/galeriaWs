@@ -100,6 +100,13 @@ class pedidosController extends Controller
         return response()->json(["respuesta" => true]);          
     }
 
+    public function getClientData(Request $request) {
+        $datosUser = DB::table('usuarios')->select('id','nombres','apellidos','email','direccion','ciudad','telefono','userType')->where('id',$request->id)->where('status','A')->first();
+         $prov = DB::table('ciudades')->select('provincia')->where('nombre',$datosUser->ciudad)->where('status','A')->first();
+         $datosUser->provincia = $prov->provincia;
+        return response()->json(["respuesta" => true,'datos' => $datosUser]);          
+    }
+
     public function pedidosListCliente(Request $request) {
       $currentPage = $request->pagina_actual;
       $limit = $request->limit;

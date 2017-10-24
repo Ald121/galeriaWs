@@ -11,7 +11,12 @@ class productsController extends Controller
 {
     
     public function sliderList(Request $request) {
-      $products = DB::table('productos')->where('status','A')->where('inSlider',1)->get();
+      if ($request->q == 'ALL') {
+        $products = DB::table('productos')->where('status','A')->where('inSlider',1)->get();
+      }else{
+        $products = DB::table('productos')->where('categoria',$request->q)->where('status','A')->where('inSlider',1)->get();
+      }
+      
       foreach ($products as $key => $prod) {
         $prod->images = DB::table('productos_imagenes')->where('status','A')->where('idproductos',$prod->idproductos)->get();
       }
@@ -36,7 +41,12 @@ class productsController extends Controller
     }
 
     public function sliderProdDestacados(Request $request) {
-      $products = DB::table('productos')->where('status','A')->where('destacar',1)->get();
+      if ($request->q == 'ALL') {
+        $products = DB::table('productos')->where('status','A')->where('destacar',1)->get();
+      }else{
+        $products = DB::table('productos')->where('categoria',$request->q)->where('destacar',1)->where('status','A')->get();
+      }
+      
       foreach ($products as $key => $prod) {
         $prod->images = DB::table('productos_imagenes')->where('status','A')->where('idproductos',$prod->idproductos)->get();
       }
@@ -62,8 +72,12 @@ class productsController extends Controller
 
     public function productsList(Request $request) {
     
-    $products = DB::table('productos')->where('status','A')->orderBy('idproductos','DESC')->get();
-
+      if ($request->q == 'ALL') {
+        $products = DB::table('productos')->where('status','A')->orderBy('idproductos','DESC')->get();
+      }else{
+        $products = DB::table('productos')->where('status','A')->where('categoria',$request->q)->orderBy('idproductos','DESC')->get();
+      }
+    
     foreach ($products as $key => $prod) {
     	$prod->images = DB::table('productos_imagenes')->where('status','A')->where('idproductos',$prod->idproductos)->get();
     }
