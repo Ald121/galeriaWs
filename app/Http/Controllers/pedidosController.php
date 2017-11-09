@@ -40,10 +40,13 @@ class pedidosController extends Controller
           $imageProd = DB::table('productos_imagenes')->select('url')
                   ->where('default',1)
                   ->where('idproductos',$prod->idproductos)->first();
-          $prodq->cantidad = $prod->cantidad;
-          $prodq->total_prod = $prod->total_prod;
-          $prodq->image = $imageProd->url;
-          $detalles[$key] = $prodq;
+          if ($prodq) {
+           $prodq->cantidad = $prod->cantidad;
+            $prodq->total_prod = $prod->total_prod;
+            $prodq->image = $imageProd->url;
+            $detalles[$key] = $prodq;
+          }
+          
           unset($detalles[$key]->idproductos);
         }
         $pedido->detalles =  $detalles;
