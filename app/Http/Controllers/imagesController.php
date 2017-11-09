@@ -48,12 +48,35 @@ class imagesController extends Controller
     }
     
     public function deleteImg(Request $request) {
-        $exists = File::exists(public_path().'/'.$request->img);
-        if ($exists) {
-           File::Delete(public_path().'/'.$request->img);
-        }
+        $delete = DB::table('pictures')->where('idpictures',$request->id)->update(['status' => 'I' ]);
+        if ($delete == 1) {
+            $exists = File::exists(public_path().'/'.$request->img);
+            if ($exists) {
+               File::Delete(public_path().'/'.$request->img);
+            }
+            return response()->json(["respuesta" => true]);
+        }else{
+            return response()->json(["respuesta" => false]);
+        }            
+    } 
+
+    public function deleteImgProd(Request $request) {
         $delete = DB::table('productos_imagenes')->where('idproductos_imagenes',$request->idImage)->update(['status' => 'I' ]);
         if ($delete == 1) {
+            $exists = File::exists(public_path().'/'.$request->img);
+            if ($exists) {
+               File::Delete(public_path().'/'.$request->img);
+            }
+            return response()->json(["respuesta" => true]);
+        }else{
+            return response()->json(["respuesta" => false]);
+        }            
+    }
+
+    public function setPreviewProdImage(Request $request) {
+        $changeAll = DB::table('productos_imagenes')->where('idproductos',$request->idProd)->update(['default' => 0 ]);
+        $change = DB::table('productos_imagenes')->where('idproductos_imagenes',$request->idImage)->update(['default' => 1 ]);
+        if ($change == 1) {
             return response()->json(["respuesta" => true]);
         }else{
             return response()->json(["respuesta" => false]);

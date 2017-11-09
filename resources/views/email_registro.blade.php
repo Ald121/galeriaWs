@@ -207,7 +207,7 @@
                                                         <td class="table-col-td" width="378" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; width: 378px;" valign="top" align="left">
 
                                                             <div style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; text-align: center;">
-                                                                <a href="http://localhost:9000/#!/activarcuenta/{{$codigo}}" style="color: #ffffff; text-decoration: none; margin: 0px; text-align: center; vertical-align: baseline; padding: 4px 9px; font-size: 15px; line-height: 21px; background-color: #1c9ad9;">&nbsp; Activar cuenta &nbsp;</a>
+                                                                <a href="http://localhost/galeria/app/#!/activarcuenta/{{$codigo}}" style="color: #ffffff; text-decoration: none; margin: 0px; text-align: center; vertical-align: baseline; padding: 4px 9px; font-size: 15px; line-height: 21px; background-color: #1c9ad9;">&nbsp; Activar cuenta &nbsp;</a>
 
                                                             </div>
 

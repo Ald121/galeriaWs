@@ -7,6 +7,8 @@ use Image;
 use DB;
 use File;
 use App\libs\funciones;
+use Mail;
+use Carbon\Carbon;
 
 class pedidosController extends Controller
 {
@@ -60,6 +62,10 @@ class pedidosController extends Controller
           'comprobante'=> ''
          ];
         $id = DB::table('pedidos')->insertGetId($prod);
+        $userData = DB::table('usuarios')->select('email','nombres','apellidos')->where('id',$request->user)->first();
+        $userDataAdmin = DB::table('usuarios')->select('email')->where('userType','ADMIN')->first();
+        $prodsDetalles = ['items' => []];
+        $suma = 0;
         foreach ($items as $value) {
           DB::table('pedidos_prods')->insert(
             [
@@ -71,15 +77,40 @@ class pedidosController extends Controller
               'color'=> $value['color'],
               'status'=>'A'
            ]);
-          // update stock
-          // $prodUpdate = DB::table('productos')->select('stock')->where('idproductos',$value['idproductos'])->first();
-          // $resta = $prodUpdate->stock - $value['cantidadInCar'];
-          // DB::table('productos')->where('idproductos',$value['idproductos'])->update(
-          //   [
-          //     'stock' => $resta
-          //  ]);
+          $prod = DB::table('productos')->where('idproductos',$value['idproductos'])->first();
+          $prod->total_fac = $value['totalCu'];
+          $suma = $suma + $value['totalCu'];
+          array_push($prodsDetalles['items'],$prod);
         }
+        $prodsDetalles['correo'] = $userData->email;
+        $prodsDetalles['total'] = count($prodsDetalles['items']);
+        $prodsDetalles['total_total'] = $suma;
+        $prodsDetalles['fecha_fac'] = Carbon::now()->toDateTimeString();
+        $sendMail = $this->enviar_correo_pedido($prodsDetalles);
+        $prodsDetalles['correo'] = $userDataAdmin->email;
+        $prodsDetalles['client_data'] = $userData;
+        $sendMailAdmin = $this->enviar_correo_pedido_admin($prodsDetalles);
         return response()->json(["respuesta" => true]);     	
+    }
+
+    public function enviar_correo_pedido_admin($data){
+        $correo_enviar = $data['correo'];
+        $send = Mail::send('email_pedido_admin', $data, function($message)use ($correo_enviar)
+            {
+                $message->from("info@otavalodigital.com",'Pedido');
+                $message->to($correo_enviar,'Nuevo Pedido')->subject('Nuevo Pedido');
+            });
+        return $send;
+    }
+
+    public function enviar_correo_pedido($data){
+        $correo_enviar = $data['correo'];
+        $send = Mail::send('email_pedido_client', $data, function($message)use ($correo_enviar)
+            {
+                $message->from("info@otavalodigital.com",'Detalles de tu pedido');
+                $message->to($correo_enviar,'Detalles de tu pedido')->subject('Detalles de tu pedido');
+            });
+        return $send;
     }
 
     public function addImgProduct(Request $request) {

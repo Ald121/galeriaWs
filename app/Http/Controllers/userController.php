@@ -65,36 +65,41 @@ class userController extends Controller
 
     public function registrar(Request $request) {
         $activationCode = $this->generateRegisterCode(12);
-        $save = DB::table('usuarios')->insert(
-        [
-         'nick' => $request->nick,
-         'pass' => bcrypt($request->pass),
-         'userType' => 'CLIENTE',
-         'status' => 'P',
-         'nombres' => $request->nombres,
-         'apellidos' => $request->apellidos,
-         'email' => $request->email,
-         'activationCode' => $activationCode,
-         'direccion' => $request->direccion,
-         'ciudad' => $request->ciudad,
-         'telefono' => $request->telefono
-        ]);
-        if ($save) {
-        $data = [ 
-                "correo" => $request->email,
-                "nombre" => $request->nombres,
-                "codigo" => $activationCode
-                ];
-        $sendMail = $this->enviar_correo_registro($data);
-        if ($sendMail == null) {
-            return response()->json(["respuesta" => $save]);
+        $userData = DB::table('usuarios')->select('email')->get();
+
+        if (count($userData) == 0) {
+            $save = DB::table('usuarios')->insert(
+            [
+             'nick' => $request->nick,
+             'pass' => bcrypt($request->pass),
+             'userType' => 'CLIENTE',
+             'status' => 'P',
+             'nombres' => $request->nombres,
+             'apellidos' => $request->apellidos,
+             'email' => $request->email,
+             'activationCode' => $activationCode,
+             'direccion' => $request->direccion,
+             'ciudad' => $request->ciudad,
+             'telefono' => $request->telefono
+            ]);
+            if ($save) {
+            $data = [ 
+                    "correo" => $request->email,
+                    "nombre" => $request->nombres,
+                    "codigo" => $activationCode
+                    ];
+            $sendMail = $this->enviar_correo_registro($data);
+            if ($sendMail == null) {
+                return response()->json(["respuesta" => $save]);
+            }else{
+                return response()->json(["respuesta" => false]);
+            }
+            }else{
+                return response()->json(["respuesta" => $save]);
+            }
         }else{
-            return response()->json(["respuesta" => false]);
-        }
-        }else{
-            return response()->json(["respuesta" => $save]);
-        }
-                   
+            return response()->json(["repuesta" => false,"error" => 'userExist']);
+        }    
     }
 
     public function activar(Request $request) {

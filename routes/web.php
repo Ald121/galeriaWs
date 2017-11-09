@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('email_registro');
+    return view('email_pedido_admin');
 });
 
 Route::group(['middleware' => 'cors'], function(){
@@ -41,6 +41,8 @@ Route::group(['middleware' => 'cors'], function(){
 	    Route::post('updateProd', 'productsController@updateProduct');
 	    Route::post('addImgProduct', 'productsController@addImgProduct');
 	    Route::post('deleteProd', 'productsController@deleteProd');
+	    Route::post('deleteImgProd', 'imagesController@deleteImgProd');
+	    Route::post('setPreviewProdImage', 'imagesController@setPreviewProdImage');
 	    // Colores
 	    Route::post('colorList', 'colorController@colorList');
 	    Route::post('addColor', 'colorController@addColor');
