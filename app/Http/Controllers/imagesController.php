@@ -10,12 +10,22 @@ use File;
 class imagesController extends Controller
 {
     
-	public function imagesList(Request $request) {
-    
-    $images = DB::table('pictures')->where('status','A')->get();
-    
-    return response()->json(["respuesta" => true, 'list' => $images]);
-                   	
+	public function addVideo(Request $request) {
+        $save = DB::table('videos')->insert([
+            'url' => $request->url,
+            'descripcion' => $request->descripcion
+        ]);
+        return response()->json(["respuesta" => $save]);              
+    }
+
+    public function imagesList(Request $request) {
+        $images = DB::table('pictures')->where('status','A')->get();
+        return response()->json(["respuesta" => true, 'list' => $images]);              
+    }
+
+    public function videoList(Request $request) {
+        $videos = DB::table('videos')->where('status','A')->get();
+        return response()->json(["respuesta" => true, 'list' => $videos]);          	
     }
 
     public function imagesListByCat(Request $request) {
@@ -46,6 +56,8 @@ class imagesController extends Controller
     return response()->json(["respuesta" => true]);
                    	
     }
+
+
     
     public function deleteImg(Request $request) {
         $delete = DB::table('pictures')->where('idpictures',$request->id)->update(['status' => 'I' ]);

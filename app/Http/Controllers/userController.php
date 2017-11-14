@@ -53,9 +53,11 @@ class userController extends Controller
         $checkpass = Hash::check($request->pass,$datos->pass);
         if ($checkpass) {
          $datos = $this->usuarios->select('id','nick')->where('nick',$request->nick)->where('status','A')->first();
-         $datosUser = $this->usuarios->select('id','nombres','apellidos','email','direccion','ciudad','telefono','userType')->where('nick',$request->nick)->where('status','A')->first();
-         $prov = DB::table('ciudades')->select('provincia')->where('nombre',$datosUser->ciudad)->where('status','A')->first();
-         $datosUser->provincia = $prov->provincia;
+         $datosUser = $this->usuarios->select('id','nombres','apellidos','email','id_card','ciudad','telefono','userType','calle1','calle2','codigo_postal')->where('nick',$request->nick)->where('status','A')->first();
+         $ciu = DB::table('ciudades')->select('provincia')->where('nombre',$datosUser->ciudad)->where('status','A')->first();
+         $datosUser->provincia = $ciu->provincia;
+         $prov = DB::table('provincias')->select('pais')->where('nombre',$ciu->provincia)->where('status','A')->first();
+         $datosUser->pais = $prov->pais;
          $extra = ['id'=>$datosUser->id];
          $token = JWTAuth::fromUser($datos,$extra);
          return response()->json(['respuesta' => true,'token' => $token,'datos' => $datosUser]);
@@ -65,7 +67,7 @@ class userController extends Controller
 
     public function registrar(Request $request) {
         $activationCode = $this->generateRegisterCode(12);
-        $userData = DB::table('usuarios')->select('email')->get();
+        $userData = DB::table('usuarios')->select('email')->where('email',$request->email)->get();
 
         if (count($userData) == 0) {
             $save = DB::table('usuarios')->insert(
@@ -78,9 +80,12 @@ class userController extends Controller
              'apellidos' => $request->apellidos,
              'email' => $request->email,
              'activationCode' => $activationCode,
-             'direccion' => $request->direccion,
+             'calle1' => $request->calle1,
+             'calle2' => $request->calle2,
              'ciudad' => $request->ciudad,
-             'telefono' => $request->telefono
+             'telefono' => $request->telefono,
+             'codigo_postal' => $request->codigo_postal,
+             'id_card' => $request->id_card
             ]);
             if ($save) {
             $data = [ 
