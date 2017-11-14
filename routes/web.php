@@ -18,6 +18,7 @@ Route::get('/', function () {
 Route::group(['middleware' => 'cors'], function(){
 	Route::post('acceso', 'userController@login');
     Route::post('imagesList', 'imagesController@imagesList');
+    Route::post('videoList', 'imagesController@videoList');
     Route::post('imagesListByCat', 'imagesController@imagesListByCat');
     Route::post('productsList', 'productsController@productsList');
     Route::post('sliderProdDestacados', 'productsController@sliderProdDestacados');
@@ -27,12 +28,15 @@ Route::group(['middleware' => 'cors'], function(){
     // Ciudades
     Route::post('getCiudades', 'locationController@getCiudades');
     Route::post('getProvincias', 'locationController@getProvincias');
+    Route::post('getPaises', 'locationController@getPaises');
+    Route::post('genCiudadesProv', 'locationController@genCiudadesProv');
     Route::post('registrar', 'userController@registrar');
     Route::post('activar', 'userController@activar');
     Route::post('bancosList', 'bancosController@bancosList');
 	Route::group(['middleware' => ['auth.galeria']], function ()
     {
 	    Route::post('uploadFiles', 'imagesController@uploadFiles');
+	    Route::post('addVideo', 'imagesController@addVideo');
 	    Route::post('deleteImg', 'imagesController@deleteImg');
 	    Route::post('salir', 'userController@salir');
 	    Route::post('checkSession', 'userController@checkSession');
